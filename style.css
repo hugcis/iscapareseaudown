@@ -1,0 +1,41 @@
+body {
+    font-family: 'Inter', sans-serif;
+    display: grid;
+    place-items: center;
+    min-height: 100vh;
+    margin: 0;
+    background-color: #f0f2f5;
+    color: #333;
+    text-align: center;
+}
+
+main {
+    padding: 2rem;
+}
+
+#status h2 {
+    font-size: 3rem;
+    margin: 0;
+    padding: 1.5rem 3rem;
+    border-radius: 8px;
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+/* Status Styles */
+#status.loading h2 { background-color: #6c757d; } /* Gray */
+#status.up h2 { background-color: #28a745; }      /* Green */
+#status.down h2 { background-color: #dc3545; }    /* Red */
+
+.timestamp {
+    margin-top: 1rem;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.caption {
+    margin-top: 2rem;
+    color: #888;
+    font-size: 0.8rem;
+    max-width: 400px;
+}
