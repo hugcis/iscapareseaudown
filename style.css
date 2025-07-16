@@ -39,3 +39,10 @@ main {
     font-size: 0.8rem;
     max-width: 400px;
 }
+
+.chart-container {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    margin: 2rem auto 0;
+}
