@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     // ------------------- CONFIGURATION -------------------
     // PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL HERE
-    const GOOGLE_APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzY_Hy-3XJ4Y4xvljjwRzsLkhCdckjuEfaM20Lwpika7WVFxvNhsnsAOXQwa8VAg9V_SQ/exec';
+    const GOOGLE_APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzJ_pSzX4QdrWCJ5OnpxLo-aKyK9SaJM4pTgyeQ7RYuiKn0eeMQmUWaJOVdwHP30Azmlg/exec';
 
     const targetUrl = 'https://capareseau.fr/';
     const downText = 'Site momentanément indisponible';
