@@ -1,54 +1,101 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // The URL of the site to check
+    // ------------------- CONFIGURATION -------------------
+    // PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL HERE
+    const GOOGLE_APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzY_Hy-3XJ4Y4xvljjwRzsLkhCdckjuEfaM20Lwpika7WVFxvNhsnsAOXQwa8VAg9V_SQ/exec';
+
     const targetUrl = 'https://capareseau.fr/';
-
-    // The text that indicates the site is down, despite a 200 OK status
     const downText = 'Site momentanément indisponible';
-
-    // We use a CORS proxy to bypass browser security restrictions
     const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
+    // -----------------------------------------------------
 
-    // Get the HTML elements we need to update
     const statusDiv = document.getElementById('status');
     const statusHeader = statusDiv.querySelector('h2');
     const lastCheckedSpan = document.getElementById('last-checked');
+    const uptimeRateSpan = document.getElementById('uptime-rate');
 
+    // Function to log the status to your Google Sheet
+    async function logStatusToSheet(status) {
+        try {
+            await fetch(GOOGLE_APP_SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors', // Important for simple "fire-and-forget" POSTs
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ status: status })
+            });
+        } catch (error) {
+            console.error('Error logging to Google Sheet:', error);
+        }
+    }
+    
+    // Function to fetch all data and calculate uptime
+    async function calculateAndDisplayUptime() {
+        try {
+            const response = await fetch(GOOGLE_APP_SCRIPT_URL);
+            const data = await response.json();
+            
+            let upCount = 0;
+            const ninetyDaysAgo = new Date();
+            ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
+
+            const recentData = data.filter(row => new Date(row[0]) > ninetyDaysAgo);
+
+            if (recentData.length === 0) {
+                 uptimeRateSpan.textContent = 'N/A';
+                 return;
+            }
+
+            recentData.forEach(row => {
+                if (row[1] === 'UP') {
+                    upCount++;
+                }
+            });
+
+            const uptimePercentage = (upCount / recentData.length) * 100;
+            uptimeRateSpan.textContent = `${uptimePercentage.toFixed(2)}%`;
+
+        } catch (error) {
+            console.error('Could not calculate uptime:', error);
+            uptimeRateSpan.textContent = 'Error';
+        }
+    }
+
+
+    // Main function to check the site status
     async function checkStatus() {
-        // Reset to loading state
         statusDiv.className = 'loading';
         statusHeader.textContent = 'Checking...';
+        let currentStatus = 'DOWN'; // Default to DOWN
 
         try {
             const response = await fetch(proxyUrl);
-            if (!response.ok) {
-                throw new Error(`Network response was not ok: ${response.statusText}`);
-            }
-            
             const data = await response.json();
             const siteContent = data.contents;
 
-            // Check if the "down text" is present in the fetched HTML
-            if (siteContent && siteContent.includes(downText)) {
-                // If text is found, the site is DOWN
-                statusDiv.className = 'down';
-                statusHeader.textContent = 'YES 🔴';
-            } else {
-                // Otherwise, the site is UP
+            if (siteContent && !siteContent.includes(downText)) {
+                currentStatus = 'UP';
                 statusDiv.className = 'up';
                 statusHeader.textContent = 'NO 🟢';
+            } else {
+                statusDiv.className = 'down';
+                statusHeader.textContent = 'YES 🔴';
             }
-
         } catch (error) {
-            // If the fetch fails for any reason
             console.error('Fetch Error:', error);
             statusDiv.className = 'down';
             statusHeader.textContent = 'Error ⚠️';
         } finally {
-            // Update the timestamp regardless of the outcome
             lastCheckedSpan.textContent = new Date().toLocaleString('fr-FR');
+            // Log the result to the sheet and then update the uptime display
+            await logStatusToSheet(currentStatus);
+            await calculateAndDisplayUptime();
         }
     }
 
-    // Run the check when the page loads
+    // Run everything on page load
     checkStatus();
+
+    // Optional: Auto-refresh every 5 minutes
+    setInterval(checkStatus, 300000); // 300,000 milliseconds = 5 minutes
 });
