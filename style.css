@@ -51,3 +51,26 @@ main {
     height: 80px;
     margin-bottom: 1rem;
 }
+
+/* Styling for the promotional message */
+.promo-message {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #ddd;
+    font-size: 0.9rem;
+    color: #555;
+    max-width: 450px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.6;
+}
+
+.promo-message a {
+    color: #0056b3;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.promo-message a:hover {
+    text-decoration: underline;
+}
