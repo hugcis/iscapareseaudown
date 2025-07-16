@@ -19,8 +19,18 @@
             <h3>Uptime (last 90 days): <span id="uptime-rate">...</span></h3>
         </div>
         <p class="timestamp">Last checked: <span id="last-checked">Never</span></p>
+
+        <div class="chart-container">
+            <canvas id="uptimeChart"></canvas>
+        </div>
         <p class="caption">This page checks if the text "Site momentanément indisponible" is present on capareseau.fr.</p>
+
+        
+
     </main>
     <script src="script.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js/dist/chart.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
 </body>
 </html>
